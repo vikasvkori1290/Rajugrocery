@@ -26,8 +26,8 @@ const MainLayout = () => {
       <header className="desktop-header">
         <div className="logo-container">
           <Link to="/" className="logo-container">
-            <div className="logo-icon">V</div>
-            <span className="logo-text">VikaGroceries</span>
+            <div className="logo-icon">R</div>
+            <span className="logo-text">Raj Groceries</span>
           </Link>
         </div>
         
@@ -43,7 +43,7 @@ const MainLayout = () => {
             </svg>
             <input 
               type="text" 
-              placeholder="Search fresh items..." 
+              placeholder="Search household products..." 
               className="search-input"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -72,8 +72,8 @@ const MainLayout = () => {
       <div className="mobile-header-wrapper">
         <div className="mobile-header-top">
           <div className="mobile-logo">
-            <div className="mobile-logo-icon">V</div>
-            <span className="mobile-logo-text">VikaGroceries</span>
+            <div className="mobile-logo-icon">R</div>
+            <span className="mobile-logo-text">Raj Groceries</span>
           </div>
           <button className="mobile-header-search-icon" aria-label="Search">
             <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 16 16" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
@@ -117,11 +117,11 @@ const MainLayout = () => {
         <div className="footer-container">
           <div className="footer-column">
             <div className="footer-logo-row">
-              <div className="footer-logo-box">V</div>
-              <span className="footer-logo-text">VikaGroceries</span>
+              <div className="footer-logo-box">R</div>
+              <span className="footer-logo-text">Raj Groceries</span>
             </div>
             <p className="footer-tagline">
-              &copy; {new Date().getFullYear()} VikaGroceries. Digital Freshness Guaranteed. From farm to doorstep with love and care.
+              &copy; {new Date().getFullYear()} Raj Groceries. Your Household Essentials Partner.
             </p>
           </div>
           

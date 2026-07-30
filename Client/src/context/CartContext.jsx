@@ -2,48 +2,15 @@ import React, { createContext, useState, useEffect } from 'react';
 import tomatoesImg from '../assets/product_tomatoes.png';
 import baguetteImg from '../assets/product_baguette.png';
 import almondMilkImg from '../assets/product_almond_milk.png';
+import avocadoImg from '../assets/product_avocado.png';
+import blueberriesImg from '../assets/product_blueberries.png';
 
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState(() => {
     const savedCart = localStorage.getItem('cart');
-    return savedCart ? JSON.parse(savedCart) : [
-      // Pre-seed cart with 3 items matching the screenshots
-      {
-        id: 1, // Cherry Tomatoes (Heirloom Heritage Tomatoes in mock)
-        name: 'Vine-Ripened Cherry Tomatoes',
-        badge: 'Organic',
-        badgeClass: 'organic',
-        description: 'Approx. 1lb • Farm-to-table fresh',
-        price: 4.99,
-        qty: 1,
-        image: tomatoesImg,
-        selectedWeight: '4 lb Bag'
-      },
-      {
-        id: 14, // Almond Milk (Golden Valley Whole Milk in mock)
-        name: 'Unsweetened Almond Milk',
-        badge: 'Dairy',
-        badgeClass: 'organic',
-        description: '1 Gallon • Glass Bottle',
-        price: 6.50,
-        qty: 2,
-        image: almondMilkImg,
-        selectedWeight: '1L Carton'
-      },
-      {
-        id: 13, // Baguette (Artisan Wild Yeast Sourdough in mock)
-        name: 'Artisan Sourdough Baguette',
-        badge: 'Fresh Bakery',
-        badgeClass: 'freshly-baked',
-        description: 'Baked daily • 24oz Loaf',
-        price: 8.25,
-        qty: 1,
-        image: baguetteImg,
-        selectedWeight: '1 Baguette'
-      }
-    ];
+    return savedCart ? JSON.parse(savedCart) : [];
   });
 
   useEffect(() => {

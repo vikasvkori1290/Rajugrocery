@@ -5,7 +5,7 @@ import { protect, adminOnly } from '../middleware/authMiddleware.js';
 const router = express.Router();
 
 router.route('/')
-  .post(protect, createOrder)
+  .post(createOrder)
   .get(protect, adminOnly, getAllOrders);
 
 router.get('/myorders', protect, getMyOrders);

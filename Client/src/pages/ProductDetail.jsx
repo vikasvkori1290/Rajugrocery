@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { products } from '../services/productsData';
 import { CartContext } from '../context/CartContext';
 
 const ProductDetail = () => {
@@ -8,12 +7,10 @@ const ProductDetail = () => {
   const navigate = useNavigate();
   const { addToCart } = useContext(CartContext);
   
-  // Find the product
-  const product = products.find(p => p.id === parseInt(id)) || products[10]; // Fallback to Organic Red Apples (id 11 is index 10)
-
-  // State
-  const [activeImage, setActiveImage] = useState(product.image);
-  const [selectedWeight, setSelectedWeight] = useState(product.weightOptions[0]);
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [activeImage, setActiveImage] = useState('');
+  const [selectedWeight, setSelectedWeight] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [isWishlist, setIsWishlist] = useState(false);
   
@@ -21,11 +18,42 @@ const ProductDetail = () => {
   const [descOpen, setDescOpen] = useState(true);
   const [nutritionOpen, setNutritionOpen] = useState(false);
 
-  // Update active image when product changes
   useEffect(() => {
-    setActiveImage(product.image);
-    setSelectedWeight(product.weightOptions[0]);
-    setQuantity(1);
+    setLoading(true);
+    fetch(`http://localhost:5000/api/products/${id}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.name) {
+          const normalized = {
+            ...data,
+            id: data._id,
+            image: data.images?.[0]?.url || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500',
+            weightOptions: ['1 kg', '2 kg', '5 kg'],
+            badge: data.stock < 10 ? 'Low Stock' : '',
+            originalPrice: data.price * 1.2
+          };
+          setProduct(normalized);
+          setActiveImage(normalized.image);
+          setSelectedWeight(normalized.weightOptions[0]);
+        } else {
+          throw new Error('Not found');
+        }
+      })
+      .catch((err) => {
+        console.error('Failed to fetch product details', err);
+        setProduct(null);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [id]);
+
+  useEffect(() => {
+    if (product) {
+      setActiveImage(product.image);
+      setSelectedWeight(product.weightOptions?.[0] || 'Each');
+      setQuantity(1);
+    }
   }, [product]);
 
   const handleQtyChange = (type) => {
@@ -40,10 +68,12 @@ const ProductDetail = () => {
     addToCart(product, quantity, selectedWeight);
   };
 
+  if (loading || !product) {
+    return <div style={{ padding: '80px', textAlign: 'center', fontSize: '18px', fontWeight: 600 }}>Loading product details...</div>;
+  }
+
   // Get similar products (exclude current)
-  const similarProducts = products
-    .filter(p => p.id !== product.id && p.category === product.category)
-    .slice(0, 4);
+  const similarProducts = [];
 
   return (
     <div className="product-detail-page">
@@ -158,8 +188,8 @@ const ProductDetail = () => {
 
           {/* Pricing */}
           <div className="detail-price-row">
-            <span className="detail-price-amount">${product.price.toFixed(2)}</span>
-            {product.unit && <span className="detail-price-unit">{product.unit}</span>}
+            <span className="detail-price-amount">₹{product.price.toFixed(2)}</span>
+            {product.unit && <span className="detail-price-unit">{product.unit.replace('$', '₹')}</span>}
           </div>
 
           {/* Weight Options */}
@@ -321,7 +351,7 @@ const ProductDetail = () => {
               <h3 className="product-name" style={{ fontSize: '14px', minHeight: '38px' }}>{p.name}</h3>
               <p className="product-desc" style={{ fontSize: '11px', minHeight: '20px' }}>{p.description}</p>
               <div className="product-footer">
-                <span className="product-price">${p.price.toFixed(2)}</span>
+                <span className="product-price">₹{p.price.toFixed(2)}</span>
                 <button className="add-to-cart-btn" aria-label={`Add ${p.name} to cart`}>+</button>
               </div>
             </Link>

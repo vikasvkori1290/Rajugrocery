@@ -20,7 +20,7 @@ export const createOrder = async (req, res, next) => {
     }
 
     const order = new Order({
-      user: req.user._id,
+      user: req.user ? req.user._id : null,
       orderItems,
       shippingAddress,
       paymentMethod,

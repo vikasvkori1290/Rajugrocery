@@ -27,6 +27,18 @@ const userSchema = new mongoose.Schema(
       enum: ['customer', 'admin'],
       default: 'customer',
     },
+    phone: {
+      type: String,
+      default: '',
+    },
+    address: {
+      type: String,
+      default: '',
+    },
+    avatar: {
+      type: String,
+      default: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
+    },
   },
   {
     timestamps: true,
@@ -34,9 +46,9 @@ const userSchema = new mongoose.Schema(
 );
 
 // Encrypt password using bcrypt
-userSchema.pre('save', async function (next) {
+userSchema.pre('save', async function () {
   if (!this.isModified('password')) {
-    next();
+    return;
   }
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);

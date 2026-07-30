@@ -1,21 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import heroBg from '../assets/hero_bg.png';
-import { products } from '../services/productsData';
 
 const Home = () => {
   const categories = [
     {
-      name: 'Fruits & Veg',
+      name: 'Atta & Flours',
       icon: (
         <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 2a15 15 0 0 0-15 15a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1A15 15 0 0 0 12 2zm0 0v16"></path>
-          <path d="M12 6a6 6 0 0 0-6 6"></path>
+          <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
         </svg>
       )
     },
     {
-      name: 'Dairy & Eggs',
+      name: 'Cooking Oils',
       icon: (
         <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
           <path d="M12 22a7 7 0 0 0 7-7c0-4.3-7-11-7-11S5 10.7 5 15a7 7 0 0 0 7 7z"></path>
@@ -23,7 +21,7 @@ const Home = () => {
       )
     },
     {
-      name: 'Bakery',
+      name: 'Biscuits & Snacks',
       icon: (
         <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
           <path d="M17 11V6a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v5"></path>
@@ -32,16 +30,16 @@ const Home = () => {
       )
     },
     {
-      name: 'Meat & Seafood',
+      name: 'Dals & Pulses',
       icon: (
         <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
-          <path d="M2 12s3-7 10-7s10 7 10 7s-3 7-10 7s-10-7-10-7z"></path>
-          <circle cx="12" cy="12" r="3"></circle>
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M8 12h8"></path>
         </svg>
       )
     },
     {
-      name: 'Pantry',
+      name: 'Household Essentials',
       icon: (
         <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
           <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
@@ -49,21 +47,33 @@ const Home = () => {
           <line x1="3" y1="15" x2="21" y2="15"></line>
         </svg>
       )
-    },
-    {
-      name: 'Frozen',
-      icon: (
-        <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
-          <line x1="12" y1="2" x2="12" y2="22"></line>
-          <line x1="2" y1="12" x2="22" y2="12"></line>
-          <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
-          <line x1="4.93" y1="19.07" x2="19.07" y2="4.93"></line>
-        </svg>
-      )
     }
   ];
 
-  const trendingProducts = products.filter(p => [1, 12, 13, 14].includes(p.id));
+  const [productsList, setProductsList] = useState([]);
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/products')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data && data.length > 0) {
+          const normalized = data.map(item => ({
+            ...item,
+            id: item._id,
+            image: item.images?.[0]?.url || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500',
+            weightOptions: ['1 kg', '2 kg', '5 kg'],
+            badge: item.stock < 10 ? 'Low Stock' : '',
+            originalPrice: item.price * 1.2
+          }));
+          setProductsList(normalized);
+        }
+      })
+      .catch((err) => {
+        console.warn('API error fetching product catalog.', err);
+      });
+  }, []);
+
+  const trendingProducts = productsList.slice(0, 4);
 
   return (
     <div>
@@ -73,13 +83,13 @@ const Home = () => {
           className="hero-banner" 
           style={{ backgroundImage: `linear-gradient(to right, rgba(251, 251, 249, 0.9) 30%, rgba(251, 251, 249, 0.2) 80%), url(${heroBg})` }}
         >
-          <span className="hero-badge">100% Organic</span>
-          <h1 className="hero-title">Vibrant Freshness, Direct to Your Door.</h1>
+          <span className="hero-badge">100% Quality Assured</span>
+          <h1 className="hero-title">Daily Essentials & Household Needs, Delivered.</h1>
           <p className="hero-subtitle">
-            Experience the market-fresh quality of premium vegetables curated for your healthy lifestyle. No middleman, just pure nature.
+            Get premium wheat flour, cooking oils, snacks, and home cleaning products at the best prices. Directly to your doorstep.
           </p>
           <div className="hero-buttons">
-            <button className="btn-primary">Shop Now</button>
+            <Link to="/shop" className="btn-primary" style={{ textDecoration: 'none' }}>Shop Now</Link>
             <button className="btn-outline">Learn More</button>
           </div>
         </div>
@@ -113,7 +123,7 @@ const Home = () => {
         <div className="section-header">
           <div>
             <h2 className="section-title">Trending Products</h2>
-            <p className="section-subtitle">What's fresh and in-demand this week</p>
+            <p className="section-subtitle">What's in-demand this week</p>
           </div>
           <div className="carousel-controls">
             <button className="carousel-btn">
@@ -143,7 +153,7 @@ const Home = () => {
               </Link>
               <p className="product-desc">{product.description}</p>
               <div className="product-footer">
-                <span className="product-price">${product.price.toFixed(2)}</span>
+                <span className="product-price">₹{product.price.toFixed(2)}</span>
                 <button className="add-to-cart-btn" aria-label={`Add ${product.name} to cart`}>+</button>
               </div>
             </div>
@@ -157,7 +167,7 @@ const Home = () => {
           <div className="newsletter-content">
             <h2 className="newsletter-title">Get $10 Off Your First Order</h2>
             <p className="newsletter-text">
-              Join the VikaGroceries family today and get exclusive access to farm-to-table deals and seasonal recipes.
+              Join the Raj Groceries family today and get exclusive access to daily deals and member discounts.
             </p>
           </div>
           <div className="newsletter-graphic">

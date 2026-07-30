@@ -1,15 +1,40 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #2D5A27;
+  --color-primary-light: #eff4ee;
+  --color-secondary: #FF8C42;
+  --color-secondary-hover: #e0722a;
+  --color-tertiary: #F4F7F1;
+  --color-neutral: #1A1C19;
+  --color-neutral-light: #7c827a;
+  --color-bg-main: #FBFBF9;
+  --color-white: #FFFFFF;
+  --color-border: #E8EBE6;
+
+  --font-headline: 'Montserrat', sans-serif;
+  --font-body: 'Inter', sans-serif;
+
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 16px 32px rgba(45, 90, 39, 0.08);
+}
 
 :root {
   /* Color Palette */
-  --color-primary: #2D5A27;       /* Forest Green */
-  --color-primary-light: #eff4ee; /* Soft Green tint */
-  --color-secondary: #FF8C42;     /* Vibrant Orange */
+  --color-primary: #2D5A27;       
+  --color-primary-light: #eff4ee; 
+  --color-secondary: #FF8C42;     
   --color-secondary-hover: #e0722a;
-  --color-tertiary: #F4F7F1;      /* Soft Light Green background */
-  --color-neutral: #1A1C19;       /* Dark Neutral */
-  --color-neutral-light: #7c827a; /* Medium gray */
-  --color-bg-main: #FBFBF9;       /* Main light background */
+  --color-tertiary: #F4F7F1;      
+  --color-neutral: #1A1C19;       
+  --color-neutral-light: #7c827a; 
+  --color-bg-main: #FBFBF9;       
   --color-white: #FFFFFF;
   --color-border: #E8EBE6;
   

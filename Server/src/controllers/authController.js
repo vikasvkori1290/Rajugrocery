@@ -84,6 +84,47 @@ export const getUserProfile = async (req, res, next) => {
         name: user.name,
         email: user.email,
         role: user.role,
+        phone: user.phone || '',
+        address: user.address || '',
+        avatar: user.avatar || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
+      });
+    } else {
+      res.status(404);
+      throw new Error('User not found');
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Update user profile
+// @route   PUT /api/auth/profile
+// @access  Private
+export const updateUserProfile = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (user) {
+      // Update name, phone, address, and avatar (ignore email updates)
+      user.name = req.body.name || user.name;
+      user.phone = req.body.phone !== undefined ? req.body.phone : user.phone;
+      user.address = req.body.address !== undefined ? req.body.address : user.address;
+      user.avatar = req.body.avatar !== undefined ? req.body.avatar : user.avatar;
+
+      if (req.body.password) {
+        user.password = req.body.password;
+      }
+
+      const updatedUser = await user.save();
+
+      res.json({
+        _id: updatedUser._id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+        role: updatedUser.role,
+        phone: updatedUser.phone || '',
+        address: updatedUser.address || '',
+        avatar: updatedUser.avatar || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
       });
     } else {
       res.status(404);

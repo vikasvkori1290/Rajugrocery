@@ -128,7 +128,7 @@ const Cart = () => {
                   </div>
 
                   <div className="cart-item-price-block">
-                    <span className="cart-item-price-val">${(item.price * item.qty).toFixed(2)}</span>
+                    <span className="cart-item-price-val">₹{(item.price * item.qty).toFixed(2)}</span>
                   </div>
                 </div>
               );
@@ -142,38 +142,38 @@ const Cart = () => {
               
               <div className="summary-row">
                 <span className="summary-label">Subtotal ({cartCount} items)</span>
-                <span className="summary-value">${cartSubtotal.toFixed(2)}</span>
+                <span className="summary-value">₹{cartSubtotal.toFixed(2)}</span>
               </div>
               
               {finalDiscount > 0 && (
                 <div className="summary-row promo-discount-row">
-                  <span className="summary-label">Promo Discount (20%)</span>
-                  <span className="summary-value">-${finalDiscount.toFixed(2)}</span>
+                   <span className="summary-label">Promo Discount (20%)</span>
+                  <span className="summary-value">-₹{finalDiscount.toFixed(2)}</span>
                 </div>
               )}
 
               <div className="summary-row">
                 <span className="summary-label">Delivery Fee</span>
                 <span className="summary-value">
-                  {deliveryFee === 0 ? 'FREE' : `$${deliveryFee.toFixed(2)}`}
+                  {deliveryFee === 0 ? 'FREE' : `₹${deliveryFee.toFixed(2)}`}
                 </span>
               </div>
 
               <div className="summary-row">
                 <span className="summary-label">Service Fee</span>
-                <span className="summary-value">${serviceFee.toFixed(2)}</span>
+                <span className="summary-value">₹{serviceFee.toFixed(2)}</span>
               </div>
 
               <div className="summary-row">
                 <span className="summary-label">Estimated Tax</span>
-                <span className="summary-value">${estimatedTax.toFixed(2)}</span>
+                <span className="summary-value">₹{estimatedTax.toFixed(2)}</span>
               </div>
 
               <div className="summary-divider"></div>
 
               <div className="summary-total-row">
                 <span className="total-label">Total</span>
-                <span className="total-value">${total.toFixed(2)}</span>
+                <span className="total-value">₹{total.toFixed(2)}</span>
               </div>
 
               <Link to="/checkout" className="summary-checkout-btn">
@@ -238,7 +238,7 @@ const Cart = () => {
                   +
                 </button>
               </div>
-              <span className="rec-price">${p.price.toFixed(2)}</span>
+              <span className="rec-price">₹{p.price.toFixed(2)}</span>
               <h4 className="rec-name">{p.name}</h4>
               <button 
                 className="mobile-rec-add-btn"

@@ -14,7 +14,15 @@ export const AuthProvider = ({ children }) => {
         try {
           api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
           const { data } = await api.get('/auth/profile');
-          setUser(data);
+          setUser({
+            _id: data._id,
+            name: data.name,
+            email: data.email,
+            role: data.role,
+            phone: data.phone || '',
+            address: data.address || '',
+            avatar: data.avatar || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
+          });
         } catch (error) {
           console.error('Failed to fetch user profile', error);
           logout();
@@ -35,6 +43,9 @@ export const AuthProvider = ({ children }) => {
         name: data.name,
         email: data.email,
         role: data.role,
+        phone: data.phone || '',
+        address: data.address || '',
+        avatar: data.avatar || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
       });
       setToken(data.token);
       localStorage.setItem('token', data.token);
@@ -58,6 +69,9 @@ export const AuthProvider = ({ children }) => {
         name: data.name,
         email: data.email,
         role: data.role,
+        phone: data.phone || '',
+        address: data.address || '',
+        avatar: data.avatar || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
       });
       setToken(data.token);
       localStorage.setItem('token', data.token);
@@ -69,6 +83,27 @@ export const AuthProvider = ({ children }) => {
       };
     } finally {
       setLoading(false);
+    }
+  };
+
+  const updateProfile = async (profileData) => {
+    try {
+      const { data } = await api.put('/auth/profile', profileData);
+      setUser({
+        _id: data._id,
+        name: data.name,
+        email: data.email,
+        role: data.role,
+        phone: data.phone || '',
+        address: data.address || '',
+        avatar: data.avatar || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
+      });
+      return { success: true };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response?.data?.message || 'Profile update failed',
+      };
     }
   };
 
@@ -87,6 +122,7 @@ export const AuthProvider = ({ children }) => {
         loading,
         login,
         register,
+        updateProfile,
         logout,
         isAuthenticated: !!user,
         isAdmin: user?.role === 'admin',

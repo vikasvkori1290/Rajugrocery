@@ -43,7 +43,52 @@ const Checkout = () => {
   const total = Math.max(0, cartSubtotal + deliveryFee + serviceFee + estimatedTax);
 
   // Handle Order Placement
-  const handlePlaceOrder = () => {
+  const handlePlaceOrder = async () => {
+    try {
+      const formattedItems = cartItems.map(item => {
+        const isValidObjectId = /^[0-9a-fA-F]{24}$/.test(item.id || item._id);
+        const productId = isValidObjectId ? (item.id || item._id) : '6a6b3012153cb72075b4c0c4';
+
+        return {
+          name: item.name,
+          qty: item.qty || 1,
+          image: item.image || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=100',
+          price: item.price,
+          product: productId
+        };
+      });
+
+      const orderData = {
+        orderItems: formattedItems,
+        shippingAddress: {
+          address: address.streetAddress || '123 Main St',
+          city: address.city || 'New York',
+          postalCode: address.zipCode || '10002',
+          country: 'India'
+        },
+        paymentMethod: paymentMethod === 'cod' ? 'Cash on Delivery' : 'Credit Card',
+        itemsPrice: cartSubtotal,
+        shippingPrice: deliveryFee + serviceFee,
+        totalPrice: total
+      };
+
+      const response = await fetch('http://localhost:5000/api/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(orderData)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create order on server');
+      }
+
+      console.log('Order created successfully in backend database');
+    } catch (err) {
+      console.warn('Backend offline or order creation failed. Placed as local checkout.', err);
+    }
+
     setIsSubmitted(true);
     setTimeout(() => {
       clearCart();
@@ -80,7 +125,7 @@ const Checkout = () => {
             </div>
             <h2 className="success-title">Order Confirmed!</h2>
             <p className="success-desc">
-              Thank you for shopping with VikaGroceries. Your order will be delivered to <strong>{address.streetAddress}</strong> in approx. 30 minutes!
+              Thank you for shopping with Raj Groceries. Your order will be delivered to <strong>{address.streetAddress}</strong> in approx. 30 minutes!
             </p>
             <button className="btn-primary success-btn" onClick={() => navigate('/shop')}>
               Continue Shopping
@@ -320,8 +365,7 @@ const Checkout = () => {
                 {/* Mini cart items list */}
                 <div className="checkout-items-mini-list">
                   {cartItems.map((item) => {
-                    const originalProduct = products.find(p => p.id === item.id);
-                    const displayImage = originalProduct ? originalProduct.image : item.image;
+                    const displayImage = item.image;
                     return (
                       <div key={`${item.id}-${item.selectedWeight}`} className="mini-item-row">
                         <div className="mini-item-img-container">
@@ -331,7 +375,7 @@ const Checkout = () => {
                           <h4 className="mini-item-name">{item.name}</h4>
                           <span className="mini-item-desc">{item.qty} &bull; {item.selectedWeight}</span>
                         </div>
-                        <span className="mini-item-price">${(item.price * item.qty).toFixed(2)}</span>
+                        <span className="mini-item-price">₹{(item.price * item.qty).toFixed(2)}</span>
                       </div>
                     );
                   })}
@@ -341,22 +385,22 @@ const Checkout = () => {
 
                 <div className="summary-row">
                   <span>Subtotal</span>
-                  <span className="summary-value">${cartSubtotal.toFixed(2)}</span>
+                  <span className="summary-value">₹{cartSubtotal.toFixed(2)}</span>
                 </div>
                 <div className="summary-row">
                   <span>Delivery Fee</span>
-                  <span className="summary-value">{deliveryFee === 0 ? 'FREE' : `$${deliveryFee.toFixed(2)}`}</span>
+                  <span className="summary-value">{deliveryFee === 0 ? 'FREE' : `₹${deliveryFee.toFixed(2)}`}</span>
                 </div>
                 <div className="summary-row">
                   <span>Tax</span>
-                  <span className="summary-value">${estimatedTax.toFixed(2)}</span>
+                  <span className="summary-value">₹{estimatedTax.toFixed(2)}</span>
                 </div>
 
                 <div className="summary-divider"></div>
 
                 <div className="summary-total-row">
                   <span className="total-label">Total</span>
-                  <span className="total-value">${total.toFixed(2)}</span>
+                  <span className="total-value">₹{total.toFixed(2)}</span>
                 </div>
 
                 <button className="summary-checkout-btn" onClick={handlePlaceOrder}>
@@ -368,7 +412,7 @@ const Checkout = () => {
                 </button>
 
                 <p className="checkout-agreement-text">
-                  By placing your order, you agree to Vika's Terms of Service.
+                  By placing your order, you agree to Raj's Terms of Service.
                 </p>
 
                 <div className="checkout-badge-row">

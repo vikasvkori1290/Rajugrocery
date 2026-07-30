@@ -1,29 +1,50 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { products } from '../services/productsData';
 import { CartContext } from '../context/CartContext';
 
 const Shop = () => {
-  const [selectedCategory, setSelectedCategory] = useState('Fruits & Veg');
-  const [organicOnly, setOrganicOnly] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState('Atta & Flours');
+  const [organicOnly, setOrganicOnly] = useState(false);
   const [localFarm, setLocalFarm] = useState(false);
   const [onSale, setOnSale] = useState(false);
   const [sortBy, setSortBy] = useState('Most Popular');
+  const [productsList, setProductsList] = useState([]);
 
   const { cartItems, addToCart, clearCart, cartSubtotal, cartCount } = useContext(CartContext);
 
-  const categories = [
+  useEffect(() => {
+    fetch('http://localhost:5000/api/products')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data && data.length > 0) {
+          // Normalize API data to match keys expected by client UI
+          const normalized = data.map(item => ({
+            ...item,
+            id: item._id,
+            image: item.images?.[0]?.url || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500',
+            weightOptions: ['1 kg', '2 kg', '5 kg'],
+            badge: item.stock < 10 ? 'Low Stock' : '',
+            originalPrice: item.price * 1.2
+          }));
+          setProductsList(normalized);
+        }
+      })
+      .catch((err) => {
+        console.warn('API error fetching product catalog.', err);
+      });
+  }, []);
+
+  const categories = [  
     {
-      name: 'Fruits & Veg',
+      name: 'Atta & Flours',
       icon: (
         <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 2a15 15 0 0 0-15 15a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1A15 15 0 0 0 12 2zm0 0v16"></path>
-          <path d="M12 6a6 6 0 0 0-6 6"></path>
+          <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
         </svg>
       )
     },
     {
-      name: 'Dairy & Eggs',
+      name: 'Cooking Oils',
       icon: (
         <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
           <path d="M12 22a7 7 0 0 0 7-7c0-4.3-7-11-7-11S5 10.7 5 15a7 7 0 0 0 7 7z"></path>
@@ -31,7 +52,7 @@ const Shop = () => {
       )
     },
     {
-      name: 'Bakery',
+      name: 'Biscuits & Snacks',
       icon: (
         <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
           <path d="M17 11V6a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v5"></path>
@@ -40,32 +61,21 @@ const Shop = () => {
       )
     },
     {
-      name: 'Meat & Seafood',
+      name: 'Dals & Pulses',
       icon: (
         <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
-          <path d="M2 12s3-7 10-7s10 7 10 7s-3 7-10 7s-10-7-10-7z"></path>
-          <circle cx="12" cy="12" r="3"></circle>
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M8 12h8"></path>
         </svg>
       )
     },
     {
-      name: 'Pantry',
+      name: 'Household Essentials',
       icon: (
         <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
           <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
           <line x1="3" y1="9" x2="21" y2="9"></line>
           <line x1="3" y1="15" x2="21" y2="15"></line>
-        </svg>
-      )
-    },
-    {
-      name: 'Frozen',
-      icon: (
-        <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
-          <line x1="12" y1="2" x2="12" y2="22"></line>
-          <line x1="2" y1="12" x2="22" y2="12"></line>
-          <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
-          <line x1="4.93" y1="19.07" x2="19.07" y2="4.93"></line>
         </svg>
       )
     }
@@ -74,7 +84,7 @@ const Shop = () => {
 
 
   // Filtering products
-  const filteredProducts = products.filter(p => {
+  const filteredProducts = productsList.filter(p => {
     if (p.category !== selectedCategory) return false;
     if (organicOnly && !p.organic) return false;
     if (onSale && !p.onSale) return false;
@@ -95,14 +105,14 @@ const Shop = () => {
     <div className="shop-layout-wrapper">
       {/* Breadcrumbs */}
       <div className="shop-breadcrumbs">
-        <Link to="/">Shop</Link> &nbsp;/&nbsp; <span style={{ fontWeight: 600, color: 'var(--color-neutral)' }}>Fresh Produce</span>
+        <Link to="/">Shop</Link> &nbsp;/&nbsp; <span style={{ fontWeight: 600, color: 'var(--color-neutral)' }}>{selectedCategory}</span>
       </div>
 
       {/* Header Row */}
       <div className="shop-header-row">
         <div className="shop-title-section">
-          <h1 className="shop-main-title">Fresh Produce</h1>
-          <p className="shop-main-subtitle">Hand-picked freshness from local farms directly to your door.</p>
+          <h1 className="shop-main-title">{selectedCategory}</h1>
+          <p className="shop-main-subtitle">Premium quality household essentials and groceries at best values.</p>
         </div>
 
         <div className="shop-sort-container">
@@ -144,15 +154,15 @@ const Shop = () => {
             <div className="filter-group">
               <label className="filter-checkbox-label">
                 <input type="checkbox" className="filter-checkbox" />
-                <span>Under $10</span>
+                <span>Under ₹100</span>
               </label>
               <label className="filter-checkbox-label">
                 <input type="checkbox" className="filter-checkbox" />
-                <span>$10 - $25</span>
+                <span>₹100 - ₹250</span>
               </label>
               <label className="filter-checkbox-label">
                 <input type="checkbox" className="filter-checkbox" />
-                <span>$25+</span>
+                <span>₹250+</span>
               </label>
             </div>
           </div>
@@ -214,11 +224,11 @@ const Shop = () => {
                 <div className="product-footer">
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                     <span className="product-price" style={{ fontSize: '16px' }}>
-                      ${product.price.toFixed(2)}
+                      ₹{product.price.toFixed(2)}
                     </span>
                     {product.oldPrice && (
                       <span style={{ textDecoration: 'line-through', fontSize: '11px', color: 'var(--color-neutral-light)' }}>
-                        ${product.oldPrice.toFixed(2)}
+                        ₹{product.oldPrice.toFixed(2)}
                       </span>
                     )}
                   </div>
@@ -235,7 +245,7 @@ const Shop = () => {
           </div>
 
           <span className="showing-indicator">
-            Showing {filteredProducts.length} of {products.length} fresh products
+            Showing {filteredProducts.length} of {productsList.length} products
           </span>
 
           <button className="load-more-btn">Load More Items</button>
@@ -248,7 +258,7 @@ const Shop = () => {
           <div className="basket-left">
             <div className="basket-thumbnails">
               {basket.slice(0, 2).map((item, idx) => {
-                const originalProduct = products.find(p => p.id === item.id);
+                const originalProduct = productsList.find(p => p.id === item.id);
                 const displayImage = originalProduct ? originalProduct.image : item.image;
                 return (
                   <div key={idx} className="basket-thumb">
@@ -265,7 +275,7 @@ const Shop = () => {
             <div className="basket-summary-info">
               <p className="basket-count-text">{basketTotalQty} Items</p>
               <p className="basket-subtotal-text">
-                Subtotal: <span className="basket-subtotal-value">${basketSubtotal.toFixed(2)}</span>
+                Subtotal: <span className="basket-subtotal-value">₹{basketSubtotal.toFixed(2)}</span>
               </p>
             </div>
           </div>
