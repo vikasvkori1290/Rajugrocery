@@ -6,6 +6,7 @@ import Products from './pages/Products';
 import Orders from './pages/Orders';
 import Activities from './pages/Activities';
 import Requests from './pages/Requests';
+import Users from './pages/Users';
 import Login from './pages/Login';
 import './App.css';
 
@@ -50,6 +51,9 @@ const AdminLayout = () => {
             <Link to="/orders" className={`menu-item ${isActive('/orders') ? 'active' : ''}`}>
               <span>📋</span> Orders
             </Link>
+            <Link to="/users" className={`menu-item ${isActive('/users') ? 'active' : ''}`}>
+              <span>👥</span> Users
+            </Link>
             <Link to="/activities" className={`menu-item ${isActive('/activities') ? 'active' : ''}`}>
               <span>🔄</span> Activities
             </Link>
@@ -73,6 +77,7 @@ const AdminLayout = () => {
           <Route path="/" element={<Dashboard />} />
           <Route path="/products" element={<Products />} />
           <Route path="/orders" element={<Orders />} />
+          <Route path="/users" element={<Users />} />
           <Route path="/activities" element={<Activities />} />
           <Route path="/requests" element={<Requests />} />
           <Route path="*" element={<Navigate to="/" replace />} />

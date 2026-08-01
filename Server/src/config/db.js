@@ -61,10 +61,24 @@ function setupMockDatabase() {
     return results.map(item => toMongooseDoc(this, item));
   };
 
-  mongoose.Model.findById = async function(id) {
-    const data = readData(this.modelName);
-    const found = data.find(item => item._id && (item._id.toString() === id.toString() || item.id === id));
-    return found ? toMongooseDoc(this, found) : null;
+  mongoose.Model.findById = function(id) {
+    const model = this;
+    const execute = () => {
+      const data = readData(model.modelName);
+      const found = data.find(item => item._id && (item._id.toString() === id.toString() || item.id === id));
+      return found ? toMongooseDoc(model, found) : null;
+    };
+
+    return {
+      select: function() { return this; },
+      then: function(resolve, reject) {
+        try {
+          resolve(execute());
+        } catch (e) {
+          reject(e);
+        }
+      }
+    };
   };
 
   mongoose.Model.findOne = function(query) {
@@ -94,9 +108,15 @@ function setupMockDatabase() {
 
   mongoose.Model.create = async function(doc) {
     const data = readData(this.modelName);
+    let docObj = { ...doc };
+    if (this.modelName === 'User' && docObj.password) {
+      const bcrypt = await import('bcryptjs');
+      const salt = await bcrypt.default.genSalt(10);
+      docObj.password = await bcrypt.default.hash(docObj.password, salt);
+    }
     const newDoc = {
       _id: new mongoose.Types.ObjectId().toString(),
-      ...doc,
+      ...docObj,
       createdAt: new Date(),
       updatedAt: new Date()
     };
@@ -128,6 +148,12 @@ function setupMockDatabase() {
     const modelName = this.constructor.modelName;
     const data = readData(modelName);
     const docObj = this.toObject();
+
+    if (modelName === 'User' && docObj.password && !docObj.password.startsWith('$2a$') && !docObj.password.startsWith('$2b$')) {
+      const bcrypt = await import('bcryptjs');
+      const salt = await bcrypt.default.genSalt(10);
+      docObj.password = await bcrypt.default.hash(docObj.password, salt);
+    }
 
     if (!docObj._id) {
       docObj._id = new mongoose.Types.ObjectId().toString();

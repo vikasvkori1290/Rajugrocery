@@ -504,7 +504,7 @@ const Profile = () => {
                   <div className="address-details-block">
                     {authUser?.address ? (
                       <>
-                        <h4 className="address-title-text">{address.title}</h4>
+                        <h4 className="address-title-text">Home Address</h4>
                         <p className="address-street-text" style={{ whiteSpace: 'pre-wrap' }}>{authUser.address}</p>
                       </>
                     ) : (

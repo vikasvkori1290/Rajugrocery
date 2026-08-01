@@ -18,10 +18,13 @@ const seedData = async () => {
     console.log('Database cleared.');
 
     // 1. Create Admin user
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash('adminpassword', salt);
+
     const adminUser = new User({
       name: 'Raj Admin',
       email: 'admin@rajgroceries.com',
-      password: 'adminpassword', // Will be hashed automatically by user pre-save hook
+      password: hashedPassword,
       role: 'admin'
     });
 
@@ -111,7 +114,6 @@ const seedData = async () => {
         images: [{ url: 'https://images.unsplash.com/photo-1610557892470-76d74c52076f?w=500', public_id: 'detergent' }]
       }
     ];
-
     await Product.insertMany(initialProducts);
     console.log(`${initialProducts.length} Products seeded successfully.`);
 

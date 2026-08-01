@@ -8,6 +8,7 @@ const Register = () => {
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -23,7 +24,7 @@ const Register = () => {
     setError('');
     setLoading(true);
 
-    const res = await register(name, email, password);
+    const res = await register(name, email, password, phone);
     setLoading(false);
 
     if (res.success) {
@@ -67,6 +68,18 @@ const Register = () => {
               onChange={(e) => setEmail(e.target.value)}
               required
               placeholder="e.g. customer@example.com"
+            />
+          </div>
+
+          <div className="form-group" style={{ textAlign: 'left' }}>
+            <label className="form-label">Phone Number</label>
+            <input
+              type="tel"
+              className="form-input"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              required
+              placeholder="e.g. +91 99999 99999"
             />
           </div>
 

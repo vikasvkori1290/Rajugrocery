@@ -37,7 +37,7 @@ const userSchema = new mongoose.Schema(
     },
     avatar: {
       type: String,
-      default: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
+      default: '/avatars/nobita.png',
     },
   },
   {

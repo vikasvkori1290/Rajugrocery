@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
             role: data.role,
             phone: data.phone || '',
             address: data.address || '',
-            avatar: data.avatar || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
+            avatar: data.avatar || '/avatars/nobita.png',
           });
         } catch (error) {
           console.error('Failed to fetch user profile', error);
@@ -45,7 +45,7 @@ export const AuthProvider = ({ children }) => {
         role: data.role,
         phone: data.phone || '',
         address: data.address || '',
-        avatar: data.avatar || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
+        avatar: data.avatar || '/avatars/nobita.png',
       });
       setToken(data.token);
       localStorage.setItem('token', data.token);
@@ -60,10 +60,10 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const register = async (name, email, password) => {
+  const register = async (name, email, password, phone) => {
     setLoading(true);
     try {
-      const { data } = await api.post('/auth/register', { name, email, password });
+      const { data } = await api.post('/auth/register', { name, email, password, phone });
       setUser({
         _id: data._id,
         name: data.name,
@@ -71,7 +71,7 @@ export const AuthProvider = ({ children }) => {
         role: data.role,
         phone: data.phone || '',
         address: data.address || '',
-        avatar: data.avatar || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
+        avatar: data.avatar || '/avatars/nobita.png',
       });
       setToken(data.token);
       localStorage.setItem('token', data.token);
@@ -96,7 +96,7 @@ export const AuthProvider = ({ children }) => {
         role: data.role,
         phone: data.phone || '',
         address: data.address || '',
-        avatar: data.avatar || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
+        avatar: data.avatar || '/avatars/nobita.png',
       });
       return { success: true };
     } catch (error) {

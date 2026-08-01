@@ -12,7 +12,7 @@ const generateToken = (id) => {
 // @route   POST /api/auth/register
 // @access  Public
 export const registerUser = async (req, res, next) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, phone } = req.body;
 
   try {
     const userExists = await User.findOne({ email });
@@ -26,6 +26,7 @@ export const registerUser = async (req, res, next) => {
       name,
       email,
       password,
+      phone: phone || '',
     });
 
     if (user) {
@@ -34,6 +35,9 @@ export const registerUser = async (req, res, next) => {
         name: user.name,
         email: user.email,
         role: user.role,
+        phone: user.phone || '',
+        address: user.address || '',
+        avatar: user.avatar || '/avatars/nobita.png',
         token: generateToken(user._id),
       });
     } else {
@@ -86,7 +90,7 @@ export const getUserProfile = async (req, res, next) => {
         role: user.role,
         phone: user.phone || '',
         address: user.address || '',
-        avatar: user.avatar || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
+        avatar: user.avatar || '/avatars/nobita.png',
       });
     } else {
       res.status(404);
@@ -124,8 +128,43 @@ export const updateUserProfile = async (req, res, next) => {
         role: updatedUser.role,
         phone: updatedUser.phone || '',
         address: updatedUser.address || '',
-        avatar: updatedUser.avatar || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
+        avatar: updatedUser.avatar || '/avatars/nobita.png',
       });
+    } else {
+      res.status(404);
+      throw new Error('User not found');
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Get all users (Admin only)
+// @route   GET /api/auth
+// @access  Private/Admin
+export const getAllUsers = async (req, res, next) => {
+  try {
+    const users = await User.find({});
+    res.json(users);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Delete user (Admin only)
+// @route   DELETE /api/auth/:id
+// @access  Private/Admin
+export const deleteUser = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id);
+
+    if (user) {
+      if (user.role === 'admin') {
+        res.status(400);
+        throw new Error('Cannot delete admin users');
+      }
+      await user.deleteOne();
+      res.json({ message: 'User deleted successfully' });
     } else {
       res.status(404);
       throw new Error('User not found');
