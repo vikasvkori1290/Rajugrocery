@@ -1,6 +1,6 @@
 [
   {
-    "_id": "6a6da52641587512d04f0d80",
+    "_id": "6a7213782c50dcb51687ce82",
     "name": "Premium Wheat Flour (Chakki Atta)",
     "description": "Traditional stone-ground whole wheat flour. Sourced directly from local mills. No added maida, rich in fiber.",
     "price": 8.99,
@@ -12,11 +12,11 @@
         "public_id": "atta"
       }
     ],
-    "createdAt": "2026-08-01T07:49:58.746Z",
-    "updatedAt": "2026-08-01T07:49:58.746Z"
+    "createdAt": "2026-08-04T16:29:44.172Z",
+    "updatedAt": "2026-08-04T16:29:44.172Z"
   },
   {
-    "_id": "6a6da52641587512d04f0d81",
+    "_id": "6a7213782c50dcb51687ce83",
     "name": "Cold-Pressed Mustard Oil",
     "description": "Pure and natural mustard seed cooking oil. Cold-pressed Kachi Ghani, rich in aroma, natural preservative.",
     "price": 6.5,
@@ -28,11 +28,11 @@
         "public_id": "oil"
       }
     ],
-    "createdAt": "2026-08-01T07:49:58.746Z",
-    "updatedAt": "2026-08-01T07:49:58.746Z"
+    "createdAt": "2026-08-04T16:29:44.172Z",
+    "updatedAt": "2026-08-04T16:29:44.172Z"
   },
   {
-    "_id": "6a6da52641587512d04f0d82",
+    "_id": "6a7213782c50dcb51687ce84",
     "name": "Premium Chocolate Chip Cookies",
     "description": "Crispy cookies loaded with premium dark chocolate chips. Perfect snack for tea-time.",
     "price": 3.5,
@@ -44,11 +44,11 @@
         "public_id": "cookies"
       }
     ],
-    "createdAt": "2026-08-01T07:49:58.746Z",
-    "updatedAt": "2026-08-01T07:49:58.746Z"
+    "createdAt": "2026-08-04T16:29:44.172Z",
+    "updatedAt": "2026-08-04T16:29:44.172Z"
   },
   {
-    "_id": "6a6da52641587512d04f0d83",
+    "_id": "6a7213782c50dcb51687ce85",
     "name": "Premium Basmati Rice (Rozana)",
     "description": "Extra long slender grains of basmati rice aged for 1 year for non-sticky fluffy cooking.",
     "price": 14.99,
@@ -60,11 +60,11 @@
         "public_id": "rice"
       }
     ],
-    "createdAt": "2026-08-01T07:49:58.746Z",
-    "updatedAt": "2026-08-01T07:49:58.746Z"
+    "createdAt": "2026-08-04T16:29:44.172Z",
+    "updatedAt": "2026-08-04T16:29:44.172Z"
   },
   {
-    "_id": "6a6da52641587512d04f0d84",
+    "_id": "6a7213782c50dcb51687ce86",
     "name": "Digestive Wheat Biscuits",
     "description": "High fiber whole wheat digestive biscuits. Low sugar formula, ideal for fitness conscious snacking.",
     "price": 2.75,
@@ -76,11 +76,11 @@
         "public_id": "digestive"
       }
     ],
-    "createdAt": "2026-08-01T07:49:58.746Z",
-    "updatedAt": "2026-08-01T07:49:58.746Z"
+    "createdAt": "2026-08-04T16:29:44.172Z",
+    "updatedAt": "2026-08-04T16:29:44.172Z"
   },
   {
-    "_id": "6a6da52641587512d04f0d85",
+    "_id": "6a7213782c50dcb51687ce87",
     "name": "Organic Toor Dal (Arhar)",
     "description": "High-protein unpolished Split pigeon peas dal. Certified organic, chemical-free.",
     "price": 3.99,
@@ -92,11 +92,11 @@
         "public_id": "toordal"
       }
     ],
-    "createdAt": "2026-08-01T07:49:58.746Z",
-    "updatedAt": "2026-08-01T07:49:58.746Z"
+    "createdAt": "2026-08-04T16:29:44.172Z",
+    "updatedAt": "2026-08-04T16:29:44.172Z"
   },
   {
-    "_id": "6a6da52641587512d04f0d86",
+    "_id": "6a7213782c50dcb51687ce88",
     "name": "Red Lentils (Masoor Dal)",
     "description": "Split red lentils. No artificial coloring or polishing agents. Quick to cook.",
     "price": 3.25,
@@ -108,11 +108,11 @@
         "public_id": "masoordal"
       }
     ],
-    "createdAt": "2026-08-01T07:49:58.746Z",
-    "updatedAt": "2026-08-01T07:49:58.746Z"
+    "createdAt": "2026-08-04T16:29:44.172Z",
+    "updatedAt": "2026-08-04T16:29:44.172Z"
   },
   {
-    "_id": "6a6da52641587512d04f0d87",
+    "_id": "6a7213782c50dcb51687ce89",
     "name": "Organic Green Moong Dal",
     "description": "Whole green gram dal beans rich in protein and fiber. Excellent choice for sprouting.",
     "price": 4.1,
@@ -124,11 +124,11 @@
         "public_id": "moongdal"
       }
     ],
-    "createdAt": "2026-08-01T07:49:58.746Z",
-    "updatedAt": "2026-08-01T07:49:58.746Z"
+    "createdAt": "2026-08-04T16:29:44.173Z",
+    "updatedAt": "2026-08-04T16:29:44.173Z"
   },
   {
-    "_id": "6a6da52641587512d04f0d88",
+    "_id": "6a7213782c50dcb51687ce8a",
     "name": "Lemon Fresh Dishwash Gel",
     "description": "Concentrated dishwashing liquid gel. Cuts through tough oil grease, gentle on skin.",
     "price": 4.99,
@@ -140,11 +140,11 @@
         "public_id": "dishwash"
       }
     ],
-    "createdAt": "2026-08-01T07:49:58.746Z",
-    "updatedAt": "2026-08-01T07:49:58.746Z"
+    "createdAt": "2026-08-04T16:29:44.173Z",
+    "updatedAt": "2026-08-04T16:29:44.173Z"
   },
   {
-    "_id": "6a6da52641587512d04f0d89",
+    "_id": "6a7213782c50dcb51687ce8b",
     "name": "Liquid Laundry Detergent",
     "description": "Advanced enzyme laundry stain remover. Gentle on clothes, preserves color fabrics.",
     "price": 9.99,
@@ -156,7 +156,7 @@
         "public_id": "detergent"
       }
     ],
-    "createdAt": "2026-08-01T07:49:58.746Z",
-    "updatedAt": "2026-08-01T07:49:58.746Z"
+    "createdAt": "2026-08-04T16:29:44.173Z",
+    "updatedAt": "2026-08-04T16:29:44.173Z"
   }
 ]

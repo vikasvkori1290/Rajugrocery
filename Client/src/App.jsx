@@ -10,6 +10,7 @@ import Checkout from './pages/Checkout';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
+import OtpVerify from './pages/OtpVerify';
 import './App.css';
 
 // Subcomponent to allow accessing location for active states
@@ -108,6 +109,7 @@ const MainLayout = () => {
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/verify-otp" element={<OtpVerify />} />
           <Route path="/profile" element={<Profile />} />
         </Routes>
       </main>

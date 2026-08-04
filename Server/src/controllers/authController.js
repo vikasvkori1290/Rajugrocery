@@ -1,5 +1,6 @@
 import User from '../models/User.js';
 import jwt from 'jsonwebtoken';
+import { sendOtpEmail } from '../services/emailService.js';
 
 // Generate JWT
 const generateToken = (id) => {
@@ -22,23 +23,31 @@ export const registerUser = async (req, res, next) => {
       throw new Error('User already exists');
     }
 
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const expires = new Date(Date.now() + 10 * 60 * 1000); // 10 mins expiration
+
     const user = await User.create({
       name,
       email,
       password,
       phone: phone || '',
+      isVerified: false,
+      otpCode: otp,
+      otpExpires: expires
     });
 
     if (user) {
+      console.log(`\n==================================================`);
+      console.log(`[OTP Verification] Code for ${email} is: ${otp}`);
+      console.log(`==================================================\n`);
+
+      // Dispatch real email
+      await sendOtpEmail(email, otp);
+
       res.status(201).json({
-        _id: user._id,
-        name: user.name,
+        verified: false,
         email: user.email,
-        role: user.role,
-        phone: user.phone || '',
-        address: user.address || '',
-        avatar: user.avatar || '/avatars/nobita.png',
-        token: generateToken(user._id),
+        message: 'Verification OTP sent to your email.'
       });
     } else {
       res.status(400);
@@ -59,11 +68,35 @@ export const loginUser = async (req, res, next) => {
     const user = await User.findOne({ email }).select('+password');
 
     if (user && (await user.matchPassword(password))) {
+      // Check if user is verified (only for customers)
+      if (user.role !== 'admin' && !user.isVerified) {
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+        const expires = new Date(Date.now() + 10 * 60 * 1000);
+
+        user.otpCode = otp;
+        user.otpExpires = expires;
+        await user.save();
+
+        console.log(`\n==================================================`);
+        console.log(`[OTP Verification] Code for ${email} is: ${otp}`);
+        console.log(`==================================================\n`);
+
+        // Dispatch real email
+        await sendOtpEmail(email, otp);
+
+        return res.json({
+          verified: false,
+          email: user.email,
+          message: 'Account not verified. Verification OTP sent to your email.'
+        });
+      }
+
       res.json({
         _id: user._id,
         name: user.name,
         email: user.email,
         role: user.role,
+        isVerified: user.isVerified,
         token: generateToken(user._id),
       });
     } else {
@@ -169,6 +202,80 @@ export const deleteUser = async (req, res, next) => {
       res.status(404);
       throw new Error('User not found');
     }
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Verify OTP and log in user
+// @route   POST /api/auth/verify-otp
+// @access  Public
+export const verifyOtp = async (req, res, next) => {
+  const { email, otp } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      res.status(404);
+      throw new Error('User not found');
+    }
+
+    if (user.otpCode !== otp || user.otpExpires < new Date()) {
+      res.status(400);
+      throw new Error('Invalid or expired OTP');
+    }
+
+    user.isVerified = true;
+    user.otpCode = null;
+    user.otpExpires = null;
+    await user.save();
+
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      isVerified: user.isVerified,
+      phone: user.phone || '',
+      address: user.address || '',
+      avatar: user.avatar || '/avatars/nobita.png',
+      token: generateToken(user._id),
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Resend OTP code
+// @route   POST /api/auth/resend-otp
+// @access  Public
+export const resendOtp = async (req, res, next) => {
+  const { email } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      res.status(404);
+      throw new Error('User not found');
+    }
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const expires = new Date(Date.now() + 10 * 60 * 1000);
+
+    user.otpCode = otp;
+    user.otpExpires = expires;
+    await user.save();
+
+    console.log(`\n==================================================`);
+    console.log(`[OTP Verification] Resent Code for ${email} is: ${otp}`);
+    console.log(`==================================================\n`);
+
+    // Dispatch real email
+    await sendOtpEmail(email, otp);
+
+    res.json({ message: 'New OTP code sent to your email.' });
   } catch (error) {
     next(error);
   }

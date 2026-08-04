@@ -38,6 +38,17 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     try {
       const { data } = await api.post('/auth/login', { email, password });
+      
+      // If OTP verification is required
+      if (data.verified === false) {
+        return {
+          success: false,
+          requiresVerification: true,
+          email: data.email,
+          message: data.message
+        };
+      }
+
       setUser({
         _id: data._id,
         name: data.name,
@@ -64,6 +75,17 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     try {
       const { data } = await api.post('/auth/register', { name, email, password, phone });
+      
+      // Registration successfully saved, but requires OTP verify
+      if (data.verified === false) {
+        return {
+          success: false,
+          requiresVerification: true,
+          email: data.email,
+          message: data.message
+        };
+      }
+
       setUser({
         _id: data._id,
         name: data.name,
@@ -83,6 +105,44 @@ export const AuthProvider = ({ children }) => {
       };
     } finally {
       setLoading(false);
+    }
+  };
+
+  const verifyOtp = async (email, otp) => {
+    setLoading(true);
+    try {
+      const { data } = await api.post('/auth/verify-otp', { email, otp });
+      setUser({
+        _id: data._id,
+        name: data.name,
+        email: data.email,
+        role: data.role,
+        phone: data.phone || '',
+        address: data.address || '',
+        avatar: data.avatar || '/avatars/nobita.png',
+      });
+      setToken(data.token);
+      localStorage.setItem('token', data.token);
+      return { success: true };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response?.data?.message || 'OTP verification failed',
+      };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const resendOtp = async (email) => {
+    try {
+      const { data } = await api.post('/auth/resend-otp', { email });
+      return { success: true, message: data.message };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response?.data?.message || 'Failed to resend OTP',
+      };
     }
   };
 
@@ -122,6 +182,8 @@ export const AuthProvider = ({ children }) => {
         loading,
         login,
         register,
+        verifyOtp,
+        resendOtp,
         updateProfile,
         logout,
         isAuthenticated: !!user,

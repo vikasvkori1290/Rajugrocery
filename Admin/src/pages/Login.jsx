@@ -8,6 +8,7 @@ const Login = () => {
 
   const [email, setEmail] = useState('admin@rajgroceries.com');
   const [password, setPassword] = useState('adminpassword');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -59,13 +60,35 @@ const Login = () => {
 
           <div className="form-group">
             <label className="form-label">Password</label>
-            <input
-              type="password"
-              className="form-input"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <div style={{ position: 'relative' }}>
+              <input
+                type={showPassword ? "text" : "password"}
+                className="form-input"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                style={{ paddingRight: '45px' }}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                style={{
+                  position: 'absolute',
+                  right: '12px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontSize: '13px',
+                  fontWeight: '700',
+                  padding: '4px',
+                  color: '#FF8C42'
+                }}
+              >
+                {showPassword ? 'HIDE' : 'SHOW'}
+              </button>
+            </div>
           </div>
 
           <button type="submit" className="login-btn" disabled={loading}>

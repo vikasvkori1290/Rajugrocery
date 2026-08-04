@@ -11,21 +11,20 @@ const seedData = async () => {
   try {
     await connectDB();
 
-    // Clear existing data
-    await User.deleteMany();
+    // Clear existing products and admin users
+    await User.deleteMany({ role: 'admin' });
     await Product.deleteMany();
 
-    console.log('Database cleared.');
+    console.log('Database cleared (Admin users and products only).');
 
     // 1. Create Admin user
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash('adminpassword', salt);
-
     const adminUser = new User({
       name: 'Raj Admin',
       email: 'admin@rajgroceries.com',
-      password: hashedPassword,
-      role: 'admin'
+      password: 'adminpassword',
+      role: 'admin',
+      isVerified: true,
+      avatar: '/avatars/nobita.png'
     });
 
     await adminUser.save();

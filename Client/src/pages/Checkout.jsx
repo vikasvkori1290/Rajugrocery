@@ -1,11 +1,13 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { CartContext } from '../context/CartContext';
+import { AuthContext } from '../context/AuthContext';
 import { products } from '../services/productsData';
 
 const Checkout = () => {
   const navigate = useNavigate();
   const { cartItems, cartSubtotal, cartCount, clearCart } = useContext(CartContext);
+  const { token, user } = useContext(AuthContext);
 
   // States
   const [activeStep, setActiveStep] = useState(1); // 1: Address, 2: Delivery Time, 3: Payment Method
@@ -19,6 +21,19 @@ const Checkout = () => {
     city: 'New York',
     zipCode: '10002'
   });
+
+  // Populate address details once user profile is retrieved
+  useEffect(() => {
+    if (user) {
+      setAddress({
+        fullName: user.name || 'John Doe',
+        phoneNumber: user.phone || '+1 (555) 000-0000',
+        streetAddress: user.address || '123 Orchard St, Apartment 4B',
+        city: 'New York',
+        zipCode: '10002'
+      });
+    }
+  }, [user]);
 
   // Selection states
   const [deliverySpeed, setDeliverySpeed] = useState('express'); // 'express' or 'scheduled'
@@ -72,11 +87,16 @@ const Checkout = () => {
         totalPrice: total
       };
 
+      const headers = {
+        'Content-Type': 'application/json'
+      };
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
       const response = await fetch('http://localhost:5000/api/orders', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers,
         body: JSON.stringify(orderData)
       });
 

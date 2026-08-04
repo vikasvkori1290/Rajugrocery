@@ -23,6 +23,11 @@ const protect = async (req, res, next) => {
         throw new Error('Not authorized, user not found');
       }
 
+      if (!req.user.isVerified) {
+        res.status(403);
+        throw new Error('Not authorized, email verification required');
+      }
+
       next();
     } catch (error) {
       console.error(error);

@@ -39,6 +39,18 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: '/avatars/nobita.png',
     },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+    otpCode: {
+      type: String,
+      default: null,
+    },
+    otpExpires: {
+      type: Date,
+      default: null,
+    },
   },
   {
     timestamps: true,

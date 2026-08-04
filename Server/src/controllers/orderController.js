@@ -1,4 +1,5 @@
 import Order from '../models/Order.js';
+import { sendOrderConfirmationEmail } from '../services/emailService.js';
 
 // @desc    Create new order
 // @route   POST /api/orders
@@ -30,6 +31,10 @@ export const createOrder = async (req, res, next) => {
     });
 
     const createdOrder = await order.save();
+
+    // Send order confirmation email asynchronously
+    await sendOrderConfirmationEmail(createdOrder, req.user);
+
     res.status(201).json(createdOrder);
   } catch (error) {
     next(error);

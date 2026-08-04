@@ -2,13 +2,16 @@
   {
     "name": "Raj Admin",
     "email": "admin@rajgroceries.com",
-    "password": "$2b$10$8epBzKipLclJpzZHQbzZvuQMvfa9LZwgtg6push3BPZ1bVLcfDstW",
+    "password": "$2b$10$v.PeOpMVpagg6ISFXdIDVenjQfUbWFG0hA86mRbnRXYlFpqaTMrKi",
     "role": "admin",
     "phone": "",
     "address": "",
     "avatar": "/avatars/nobita.png",
-    "_id": "6a6da52641587512d04f0d7f",
-    "createdAt": "2026-08-01T07:49:58.742Z",
-    "updatedAt": "2026-08-01T07:49:58.742Z"
+    "isVerified": true,
+    "otpCode": null,
+    "otpExpires": null,
+    "_id": "6a7213782c50dcb51687ce81",
+    "createdAt": "2026-08-04T16:29:44.169Z",
+    "updatedAt": "2026-08-04T16:29:44.169Z"
   }
 ]

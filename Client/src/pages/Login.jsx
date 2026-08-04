@@ -8,6 +8,7 @@ const Login = () => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -27,6 +28,8 @@ const Login = () => {
 
     if (res.success) {
       navigate('/profile');
+    } else if (res.requiresVerification) {
+      navigate(`/verify-otp?email=${res.email}`);
     } else {
       setError(res.message || 'Invalid email or password');
     }
@@ -59,14 +62,36 @@ const Login = () => {
 
           <div className="form-group" style={{ textAlign: 'left' }}>
             <label className="form-label">Password</label>
-            <input
-              type="password"
-              className="form-input"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              placeholder="Enter your password"
-            />
+            <div style={{ position: 'relative' }}>
+              <input
+                type={showPassword ? "text" : "password"}
+                className="form-input"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                placeholder="Enter your password"
+                style={{ paddingRight: '45px' }}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                style={{
+                  position: 'absolute',
+                  right: '12px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontSize: '13px',
+                  fontWeight: '700',
+                  padding: '4px',
+                  color: '#FF8C42'
+                }}
+              >
+                {showPassword ? 'HIDE' : 'SHOW'}
+              </button>
+            </div>
           </div>
 
           <button type="submit" className="login-btn" style={{ backgroundColor: '#2D5A27' }} disabled={loading}>
