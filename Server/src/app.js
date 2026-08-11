@@ -31,18 +31,29 @@ app.get('/health', (req, res) => {
 });
 
 // Diagnostics endpoint to debug Vercel database connections
-app.get('/api/diagnostic', (req, res) => {
+app.get('/api/diagnostic', async (req, res) => {
   const uri = process.env.MONGODB_URI;
   let maskedUri = 'undefined';
+  let connectionError = null;
+  let connectionSuccess = false;
   
   if (uri) {
     // Mask username/password for privacy
     maskedUri = uri.replace(/\/\/([^:]+):([^@]+)@/, '//******:******@');
+    try {
+      // Run a quick fresh connection attempt
+      await mongoose.connect(uri, { serverSelectionTimeoutMS: 5000 });
+      connectionSuccess = true;
+    } catch (err) {
+      connectionError = err.message + '\n' + err.stack;
+    }
   }
 
   res.status(200).json({
     mongodbUriPresent: !!uri,
     mongodbUriMasked: maskedUri,
+    connectionSuccess,
+    connectionError,
     mongooseConnectionState: mongoose.connection.readyState,
     mongooseConnectionStateString: ['disconnected', 'connected', 'connecting', 'disconnecting'][mongoose.connection.readyState] || 'unknown',
     nodeEnv: process.env.NODE_ENV
