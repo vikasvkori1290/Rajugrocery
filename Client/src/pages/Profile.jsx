@@ -50,12 +50,6 @@ const Profile = () => {
           setOrdersLoading(false);
         });
 
-      // Show welcome coins popup once per session
-      const shownBefore = sessionStorage.getItem('welcomePopupShown');
-      if (!shownBefore) {
-        setShowPopup(true);
-        sessionStorage.setItem('welcomePopupShown', 'true');
-      }
     }
   }, [isAuthenticated]);
 
@@ -119,56 +113,6 @@ const Profile = () => {
 
   return (
     <div className="profile-page-wrapper">
-      {/* Welcome Congratulatory Popup */}
-      {showPopup && (
-        <div className="welcome-popup-overlay" style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          backgroundColor: 'rgba(0, 0, 0, 0.6)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 9999,
-          animation: 'fadeIn 0.3s'
-        }}>
-          <div className="welcome-popup-card" style={{
-            background: '#ffffff',
-            padding: '40px',
-            borderRadius: '24px',
-            textAlign: 'center',
-            maxWidth: '400px',
-            width: '95%',
-            boxShadow: '0 20px 40px rgba(0,0,0,0.15)',
-            border: '1.5px solid #F1ECE4'
-          }}>
-            <div style={{ fontSize: '60px', marginBottom: '20px' }}>🎉</div>
-            <h2 style={{ color: '#2D5A27', fontWeight: 800, fontSize: '24px', marginBottom: '12px' }}>Congratulations!</h2>
-            <p style={{ fontSize: '15px', color: '#4B5563', lineHeight: '1.6', marginBottom: '24px' }}>
-              You have received <strong style={{ color: '#FF8C42' }}>100 Raj Coins</strong> for registering with Raj Groceries!
-            </p>
-            <button 
-              onClick={() => setShowPopup(false)}
-              style={{
-                backgroundColor: '#2D5A27',
-                color: 'white',
-                border: 'none',
-                padding: '12px 30px',
-                borderRadius: '30px',
-                fontWeight: 700,
-                fontSize: '15px',
-                cursor: 'pointer',
-                boxShadow: '0 4px 10px rgba(45, 90, 39, 0.2)'
-              }}
-            >
-              Claim Coins
-            </button>
-          </div>
-        </div>
-      )}
-
       {/* Edit Profile Modal */}
       {isEditing && (
         <div className="welcome-popup-overlay" style={{
@@ -554,23 +498,9 @@ const Profile = () => {
                 )}
               </div>
 
-              {/* Bottom Rewards & fresh pass cards */}
-              <div className="rewards-pass-grid">
-                <div className="rewards-card-green">
-                  <div className="rewards-header">
-                    <div>
-                      <p className="rewards-label">RAJ REWARDS</p>
-                      <h2 className="rewards-points-count">{user.points.toLocaleString()} Raj Coins</h2>
-                    </div>
-                    <span className="rewards-stars-icon">⭐</span>
-                  </div>
-                  <div className="rewards-progress-container">
-                    <div className="rewards-progress-bar" style={{ width: '80%' }}></div>
-                  </div>
-                  <p className="rewards-footer-text">550 coins until your next ₹500 reward</p>
-                </div>
-
-                <div className="freshpass-card">
+              {/* Bottom fresh pass card */}
+              <div className="rewards-pass-grid" style={{ gridTemplateColumns: '1fr' }}>
+                <div className="freshpass-card" style={{ maxWidth: '450px' }}>
                   <div className="freshpass-icon-box">eco</div>
                   <div className="freshpass-info-block">
                     <h4 className="freshpass-title">Delivery Pass Monthly</h4>

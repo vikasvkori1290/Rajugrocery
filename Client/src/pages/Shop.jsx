@@ -9,10 +9,12 @@ const Shop = () => {
   const [onSale, setOnSale] = useState(false);
   const [sortBy, setSortBy] = useState('Most Popular');
   const [productsList, setProductsList] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const { cartItems, addToCart, clearCart, cartSubtotal, cartCount } = useContext(CartContext);
 
   useEffect(() => {
+    setLoading(true);
     const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
     fetch(`${apiUrl}/products`)
       .then((res) => res.json())
@@ -32,6 +34,9 @@ const Shop = () => {
       })
       .catch((err) => {
         console.warn('API error fetching product catalog.', err);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, []);
 
@@ -204,45 +209,71 @@ const Shop = () => {
 
         {/* Product Listing Grid */}
         <div className="shop-feed-container">
+          <style>{`
+            @keyframes spin {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
+            }
+          `}</style>
+
           <div className="product-grid-5cols">
-            {filteredProducts.map(product => (
-              <div key={product.id} className="product-card">
-                {product.badge && (
-                  <span className={`product-tag ${product.badgeClass}`}>{product.badge}</span>
-                )}
-                <Link to={`/product/${product.id}`} className="product-image-container" style={{ display: 'block' }}>
-                  <img src={product.image} alt={product.name} className="product-img" />
-                </Link>
-                <span className="product-category">{product.category}</span>
-                <Link to={`/product/${product.id}`}>
-                  <h3 className="product-name" style={{ fontSize: '14px', minHeight: '38px', cursor: 'pointer' }}>
-                    {product.name}
-                  </h3>
-                </Link>
-                <p className="product-desc" style={{ fontSize: '11px', minHeight: '20px', marginBottom: '8px' }}>
-                  {product.description}
-                </p>
-                <div className="product-footer">
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-                    <span className="product-price" style={{ fontSize: '16px' }}>
-                      ₹{product.price.toFixed(2)}
-                    </span>
-                    {product.oldPrice && (
-                      <span style={{ textDecoration: 'line-through', fontSize: '11px', color: 'var(--color-neutral-light)' }}>
-                        ₹{product.oldPrice.toFixed(2)}
-                      </span>
-                    )}
-                  </div>
-                  <button 
-                    className="add-to-cart-btn" 
-                    onClick={() => addToBasket(product)}
-                    aria-label={`Add ${product.name} to cart`}
-                  >
-                    +
-                  </button>
-                </div>
+            {loading ? (
+              <div style={{ gridColumn: '1 / -1', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px 0' }}>
+                <div className="premium-spinner" style={{
+                  width: '50px',
+                  height: '50px',
+                  border: '5px solid #E5E7EB',
+                  borderTop: '5px solid #2D5A27',
+                  borderRadius: '50%',
+                  animation: 'spin 1s linear infinite',
+                  marginBottom: '16px'
+                }}></div>
+                <p style={{ color: '#4B5563', fontWeight: 600 }}>Loading fresh catalog...</p>
               </div>
-            ))}
+            ) : filteredProducts.length === 0 ? (
+              <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '60px' }}>
+                <p style={{ color: '#6B7280', fontSize: '16px' }}>No products found matching the criteria.</p>
+              </div>
+            ) : (
+              filteredProducts.map(product => (
+                <div key={product.id} className="product-card">
+                  {product.badge && (
+                    <span className={`product-tag ${product.badgeClass}`}>{product.badge}</span>
+                  )}
+                  <Link to={`/product/${product.id}`} className="product-image-container" style={{ display: 'block' }}>
+                    <img src={product.image} alt={product.name} className="product-img" />
+                  </Link>
+                  <span className="product-category">{product.category}</span>
+                  <Link to={`/product/${product.id}`}>
+                    <h3 className="product-name" style={{ fontSize: '14px', minHeight: '38px', cursor: 'pointer' }}>
+                      {product.name}
+                    </h3>
+                  </Link>
+                  <p className="product-desc" style={{ fontSize: '11px', minHeight: '20px', marginBottom: '8px' }}>
+                    {product.description}
+                  </p>
+                  <div className="product-footer">
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                      <span className="product-price" style={{ fontSize: '16px' }}>
+                        ₹{product.price.toFixed(2)}
+                      </span>
+                      {product.oldPrice && (
+                        <span style={{ textDecoration: 'line-through', fontSize: '11px', color: 'var(--color-neutral-light)' }}>
+                          ₹{product.oldPrice.toFixed(2)}
+                        </span>
+                      )}
+                    </div>
+                    <button 
+                      className="add-to-cart-btn" 
+                      onClick={() => addToBasket(product)}
+                      aria-label={`Add ${product.name} to cart`}
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
 
           <span className="showing-indicator">
