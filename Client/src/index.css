@@ -3432,8 +3432,21 @@ input {
   }
 }
 
-
-
-
-
-
+/* Mobile font size and spacing optimizations */
+@media (max-width: 768px) {
+  .shop-main-title {
+    font-size: 22px !important;
+    margin-bottom: 4px !important;
+  }
+  .shop-main-subtitle {
+    font-size: 11px !important;
+    line-height: 1.4 !important;
+  }
+  .shop-header-row {
+    margin-bottom: 12px !important;
+  }
+  .shop-breadcrumbs {
+    font-size: 11px !important;
+    margin-bottom: 8px !important;
+  }
+}
