@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import mongoose from 'mongoose';
 import authRoutes from './routes/authRoutes.js';
 import productRoutes from './routes/productRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
@@ -27,6 +28,25 @@ app.use('/api/orders', orderRoutes);
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok', timestamp: new Date() });
+});
+
+// Diagnostics endpoint to debug Vercel database connections
+app.get('/api/diagnostic', (req, res) => {
+  const uri = process.env.MONGODB_URI;
+  let maskedUri = 'undefined';
+  
+  if (uri) {
+    // Mask username/password for privacy
+    maskedUri = uri.replace(/\/\/([^:]+):([^@]+)@/, '//******:******@');
+  }
+
+  res.status(200).json({
+    mongodbUriPresent: !!uri,
+    mongodbUriMasked: maskedUri,
+    mongooseConnectionState: mongoose.connection.readyState,
+    mongooseConnectionStateString: ['disconnected', 'connected', 'connecting', 'disconnecting'][mongoose.connection.readyState] || 'unknown',
+    nodeEnv: process.env.NODE_ENV
+  });
 });
 
 // Error handling middleware
