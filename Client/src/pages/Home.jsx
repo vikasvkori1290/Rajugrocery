@@ -53,7 +53,8 @@ const Home = () => {
   const [productsList, setProductsList] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/products')
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+    fetch(`${apiUrl}/products`)
       .then((res) => res.json())
       .then((data) => {
         if (data && data.length > 0) {

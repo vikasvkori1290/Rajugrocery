@@ -20,7 +20,8 @@ const ProductDetail = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`http://localhost:5000/api/products/${id}`)
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+    fetch(`${apiUrl}/products/${id}`)
       .then(res => res.json())
       .then(data => {
         if (data && data.name) {

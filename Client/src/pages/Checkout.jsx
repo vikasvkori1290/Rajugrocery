@@ -105,7 +105,8 @@ const Checkout = () => {
         headers['Authorization'] = `Bearer ${token}`;
       }
 
-      const response = await fetch('http://localhost:5000/api/orders', {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+      const response = await fetch(`${apiUrl}/orders`, {
         method: 'POST',
         headers,
         body: JSON.stringify(orderData)
