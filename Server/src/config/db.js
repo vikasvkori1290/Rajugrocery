@@ -37,7 +37,12 @@ function toMongooseDoc(modelClass, rawItem) {
     }
   }
   if (rawItem.password) {
-    doc.password = rawItem.password;
+    Object.defineProperty(doc, 'password', {
+      value: rawItem.password,
+      writable: true,
+      configurable: true,
+      enumerable: true
+    });
   }
   return doc;
 }

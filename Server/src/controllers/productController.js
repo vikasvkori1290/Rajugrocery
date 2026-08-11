@@ -84,13 +84,28 @@ export const updateProduct = async (req, res, next) => {
       product.category = category || product.category;
       product.stock = stock || product.stock;
 
+      // Handle existing image retention
+      let parsedExisting = [];
+      if (req.body.existingImages) {
+        try {
+          parsedExisting = JSON.parse(req.body.existingImages);
+        } catch (e) {
+          parsedExisting = product.images || [];
+        }
+      } else if (req.body.existingImages === '[]') {
+        parsedExisting = [];
+      } else {
+        parsedExisting = product.images || [];
+      }
+
       if (req.files && req.files.length > 0) {
-        // Add new images to existing images
         const newImages = req.files.map(file => ({
           url: file.path,
           public_id: file.filename,
         }));
-        product.images = [...product.images, ...newImages];
+        product.images = [...parsedExisting, ...newImages].slice(0, 6);
+      } else {
+        product.images = parsedExisting.slice(0, 6);
       }
 
       const updatedProduct = await product.save();

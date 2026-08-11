@@ -7,11 +7,11 @@ const router = express.Router();
 
 router.route('/')
   .get(getProducts)
-  .post(protect, adminOnly, upload.array('images', 5), createProduct);
+  .post(protect, adminOnly, upload.array('images', 6), createProduct);
 
 router.route('/:id')
   .get(getProductById)
-  .put(protect, adminOnly, upload.array('images', 5), updateProduct)
+  .put(protect, adminOnly, upload.array('images', 6), updateProduct)
   .delete(protect, adminOnly, deleteProduct);
 
 export default router;

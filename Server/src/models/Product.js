@@ -34,8 +34,14 @@ const productSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
   }
 );
+
+productSchema.virtual('image').get(function() {
+  return this.images && this.images.length > 0 ? this.images[0].url : '/images/placeholder.png';
+});
 
 const Product = mongoose.model('Product', productSchema);
 export default Product;

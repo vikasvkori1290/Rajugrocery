@@ -28,6 +28,7 @@ const ProductDetail = () => {
             ...data,
             id: data._id,
             image: data.images?.[0]?.url || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500',
+            thumbnails: data.images && data.images.length > 0 ? data.images.map(img => img.url) : [data.images?.[0]?.url || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500'],
             weightOptions: ['1 kg', '2 kg', '5 kg'],
             badge: data.stock < 10 ? 'Low Stock' : '',
             originalPrice: data.price * 1.2
@@ -145,14 +146,6 @@ const ProductDetail = () => {
 
           {/* Thumbnails */}
           <div className="detail-thumbnails-row">
-            {/* Main image thumbnail */}
-            <button 
-              className={`detail-thumb-btn ${activeImage === product.image ? 'active' : ''}`}
-              onClick={() => setActiveImage(product.image)}
-            >
-              <img src={product.image} alt={product.name} className="detail-thumb-img" />
-            </button>
-            {/* Dynamic thumbnail array */}
             {product.thumbnails && product.thumbnails.map((thumb, idx) => (
               <button 
                 key={idx}

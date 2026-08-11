@@ -7,11 +7,22 @@ import { products } from '../services/productsData';
 const Checkout = () => {
   const navigate = useNavigate();
   const { cartItems, cartSubtotal, cartCount, clearCart } = useContext(CartContext);
-  const { token, user } = useContext(AuthContext);
+  const { token, user, loading } = useContext(AuthContext);
 
   // States
   const [activeStep, setActiveStep] = useState(1); // 1: Address, 2: Delivery Time, 3: Payment Method
   const [isSubmitted, setIsSubmitted] = useState(false); // Show success overlay
+
+  // Redirect if not logged in
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate('/login?redirect=checkout');
+    }
+  }, [user, loading, navigate]);
+
+  if (loading) {
+    return <div style={{ padding: '80px', textAlign: 'center', fontSize: '18px', fontWeight: 600 }}>Loading checkout page...</div>;
+  }
 
   // Address Form State
   const [address, setAddress] = useState({
