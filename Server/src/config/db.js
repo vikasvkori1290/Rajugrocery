@@ -202,15 +202,20 @@ function setupMockDatabase() {
 
 const connectDB = async () => {
   try {
-    // Attempt local MongoDB connection
+    // Attempt local MongoDB connection with 10s timeout
     const conn = await mongoose.connect(process.env.MONGODB_URI, {
-      serverSelectionTimeoutMS: 2000
+      serverSelectionTimeoutMS: 10000
     });
     console.log(`MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
     console.warn(`Database Connection Warning: ${error.message}`);
-    console.log('--- STARTING IN-MEMORY JSON FALLBACK DATABASE ---');
-    setupMockDatabase();
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('--- STARTING IN-MEMORY JSON FALLBACK DATABASE ---');
+      setupMockDatabase();
+    } else {
+      console.error('Database connection failed in production mode. Fallback database disabled.');
+      throw error;
+    }
   }
 };
 

@@ -49,6 +49,14 @@ app.get('/api/diagnostic', async (req, res) => {
     }
   }
 
+  // Check email SMTP configuration
+  const smtpConfig = {
+    SMTP_HOST: process.env.SMTP_HOST || 'not set',
+    SMTP_PORT: process.env.SMTP_PORT || 'not set',
+    SMTP_USER: process.env.SMTP_USER ? 'configured (not showing email for privacy)' : 'not set',
+    SMTP_PASS: process.env.SMTP_PASS ? 'configured (hidden)' : 'not set'
+  };
+
   res.status(200).json({
     mongodbUriPresent: !!uri,
     mongodbUriMasked: maskedUri,
@@ -56,6 +64,7 @@ app.get('/api/diagnostic', async (req, res) => {
     connectionError,
     mongooseConnectionState: mongoose.connection.readyState,
     mongooseConnectionStateString: ['disconnected', 'connected', 'connecting', 'disconnecting'][mongoose.connection.readyState] || 'unknown',
+    smtpConfig,
     nodeEnv: process.env.NODE_ENV
   });
 });
